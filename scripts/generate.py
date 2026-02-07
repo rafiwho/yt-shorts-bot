@@ -1,18 +1,23 @@
 import random
+import os
 
-with open("templates/hooks.txt") as f:
-    hooks = f.readlines()
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-with open("facts/facts.txt") as f:
-    facts = f.readlines()
+hooks_path = os.path.join(BASE_DIR, "templates", "hooks.txt")
+facts_path = os.path.join(BASE_DIR, "facts", "facts.txt")
 
-hook = random.choice(hooks).strip()
-fact = random.choice(facts).strip()
+with open(hooks_path, "r") as f:
+    hooks = [line.strip() for line in f if line.strip()]
+
+with open(facts_path, "r") as f:
+    facts = [line.strip() for line in f if line.strip()]
+
+hook = random.choice(hooks)
+fact = random.choice(facts)
 
 script = f"{hook} {fact} Follow for more."
 
-with open("output.txt", "w") as f:
+with open(os.path.join(BASE_DIR, "output.txt"), "w") as f:
     f.write(script)
 
 print(script)
-
