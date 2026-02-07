@@ -1,36 +1,21 @@
-name: Shorts Bot Test
-
-on:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
       - name: Install FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
+      - name: Install TTS
+        run: |
+          sudo apt-get install -y espeak-ng
+
       - name: Generate script
         run: python scripts/generate.py
+
+      - name: Generate voice
+        run: |
+          chmod +x audio/tts.sh
+          bash audio/tts.sh
 
       - name: Render video
         run: |
           chmod +x video/render.sh
           bash video/render.sh
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: short-video
-          path: output.mp4
