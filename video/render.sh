@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-# Ensure predictable locale
-export LC_ALL=C
-
-# Limit FFmpeg threads (CRITICAL for memory)
-export FFREPORT=file=ffmpeg.log:level=32
-
-# Prepare text file for drawtext (safe, no shell expansion)
+# Copy caption text safely
 cp output.txt caption.txt
 
+# Generate base video (no audio)
 ffmpeg -y \
   -threads 1 \
   -loop 1 -i assets/bg.jpg \
@@ -25,5 +20,13 @@ ffmpeg -y \
        y=(h-text_h)/2" \
   -t 8 \
   -pix_fmt yuv420p \
-  -movflags +faststart \
+  silent.mp4
+
+# Merge voice with video
+ffmpeg -y \
+  -i silent.mp4 \
+  -i voice.wav \
+  -c:v copy \
+  -c:a aac \
+  -shortest \
   output.mp4
