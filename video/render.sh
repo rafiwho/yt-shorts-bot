@@ -1,1 +1,14 @@
+      - name: Generate script
+        run: python scripts/generate.py
+
+      - name: Render video
+        run: |
+          chmod +x video/render.sh
+          bash video/render.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-video
+          path: output.mp4
 
