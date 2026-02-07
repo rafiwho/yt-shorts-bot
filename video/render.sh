@@ -1,14 +1,29 @@
-      - name: Generate script
-        run: python scripts/generate.py
+#!/usr/bin/env bash
+set -e
 
-      - name: Render video
-        run: |
-          chmod +x video/render.sh
-          bash video/render.sh
+# Ensure predictable locale
+export LC_ALL=C
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: short-video
-          path: output.mp4
+# Limit FFmpeg threads (CRITICAL for memory)
+export FFREPORT=file=ffmpeg.log:level=32
 
+# Prepare text file for drawtext (safe, no shell expansion)
+cp output.txt caption.txt
+
+ffmpeg -y \
+  -threads 1 \
+  -loop 1 -i assets/bg.jpg \
+  -vf "scale=720:1280,
+       drawtext=textfile=caption.txt:
+       fontcolor=white:
+       fontsize=42:
+       line_spacing=8:
+       box=1:
+       boxcolor=black@0.6:
+       boxborderw=16:
+       x=(w-text_w)/2:
+       y=(h-text_h)/2" \
+  -t 8 \
+  -pix_fmt yuv420p \
+  -movflags +faststart \
+  output.mp4
