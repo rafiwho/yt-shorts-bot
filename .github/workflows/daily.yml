@@ -26,25 +26,10 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      - name: Generate background
+      - name: Generate video
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/generate_bg.py
-
-      - name: Generate script
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/generate.py
-
-      - name: Generate voice
-        run: |
-          chmod +x audio/tts.sh
-          bash audio/tts.sh
-
-      - name: Render video
-        run: |
-          chmod +x video/render.sh
-          bash video/render.sh
+        run: python run_local.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
