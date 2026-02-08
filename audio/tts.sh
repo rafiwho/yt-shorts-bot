@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -e
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
-# Clean text (espeak hates special chars)
-sed 's/[^a-zA-Z0-9 .,?!]/ /g' output.txt > clean.txt
+cleantext=$(sed 's/[^a-zA-Z0-9 .,?!]/ /g' output.txt)
 
-# Generate voice
 espeak-ng \
   -s 145 \
   -p 55 \
   -v en \
   -w voice.wav \
-  "$(cat clean.txt)"
+  "$cleantext"

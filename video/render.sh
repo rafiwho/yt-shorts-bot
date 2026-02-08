@@ -1,24 +1,12 @@
 #!/usr/bin/env bash
 set -e
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
-# Prepare caption text
-cp output.txt caption.txt
-
-# 1. Create silent base video with animated captions
 ffmpeg -y \
   -threads 1 \
   -loop 1 -i assets/bg.jpg \
-  -vf "scale=720:1280,
-       drawtext=textfile=caption.txt:
-       fontcolor=white:
-       fontsize=42:
-       line_spacing=8:
-       box=1:
-       boxcolor=black@0.6:
-       boxborderw=16:
-       x=(w-text_w)/2:
-       y=(h-text_h)/2:
-       enable='between(t,0,8)'" \
+  -vf "scale=720:1280" \
   -t 8 \
   -pix_fmt yuv420p \
   silent.mp4
@@ -36,4 +24,5 @@ ffmpeg -y \
   -c:v copy \
   -c:a aac \
   -shortest \
+  -metadata:s:v:0 rotate=0 \
   output.mp4

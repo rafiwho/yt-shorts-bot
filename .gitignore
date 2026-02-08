@@ -1,0 +1,12 @@
+.env
+client_secret.json
+token.json
+output.txt
+caption.txt
+voice.wav
+voice_tts.mp3
+silent.mp4
+output.mp4
+__pycache__
+*.pyc
+.pytest_cache

@@ -1,3 +1,19 @@
+name: Shorts pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install FFmpeg
         run: |
           sudo apt-get update
@@ -7,7 +23,17 @@
         run: |
           sudo apt-get install -y espeak-ng
 
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Generate background
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/generate_bg.py
+
       - name: Generate script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/generate.py
 
       - name: Generate voice
@@ -19,3 +45,9 @@
         run: |
           chmod +x video/render.sh
           bash video/render.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-mp4
+          path: output.mp4
